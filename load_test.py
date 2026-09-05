@@ -1,28 +1,35 @@
-﻿import argparse
+﻿"""
+load_test.py - Script de pruebas de carga para el backend monolitico de Cheapest.
+"""
+
+import argparse
 import asyncio
 import csv
 import json
 import statistics
 import time
+import itertools
 from datetime import datetime, timezone
 
 import httpx
 
 BASE_URL = "http://localhost:3000"
 
+_id_counter = itertools.count()
 
 def build_post_body(n_items: int = 25) -> dict:
+    PRODUCTO_ID_REAL = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
     items = []
     for i in range(n_items):
         items.append({
-            "productoId": f"aaaaaaaa-aaaa-4aaa-8aaa-{i:012d}",
+            "productoId": PRODUCTO_ID_REAL,
             "cantidad": (i % 5) + 1,
             "precioUnitario": 10000 + (i * 137),
             "descuento": 0 if i % 3 else 500,
             "monedaId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
         })
     return {
-        "identificador": f"PED-LOADTEST-{int(time.time())}",
+        "identificador": f"PED-LOADTEST-{time.time_ns()}-{next(_id_counter)}",
         "tiendaId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
         "fechaHoraCreacion": datetime.now(timezone.utc).isoformat(),
         "montoTotal": sum(it["precioUnitario"] * it["cantidad"] for it in items),
@@ -32,7 +39,7 @@ def build_post_body(n_items: int = 25) -> dict:
     }
 
 
-async def fire_request(client, method, url, body, results, delay):
+async def fire_request(client, method, url, body_fn, results, delay):
     if delay > 0:
         await asyncio.sleep(delay)
 
@@ -45,10 +52,13 @@ async def fire_request(client, method, url, body, results, delay):
         if method == "GET":
             resp = await client.get(url, timeout=30.0)
         else:
+            body = body_fn()
             resp = await client.post(url, json=body, timeout=30.0,
                                       headers={"Content-Type": "application/json",
                                                "Accept": "application/json"})
         status_code = resp.status_code
+        if status_code >= 400:
+            error = resp.text[:300].replace("\n", " ")
     except httpx.TimeoutException:
         error = "timeout"
     except httpx.ConnectError:
@@ -68,7 +78,7 @@ async def fire_request(client, method, url, body, results, delay):
     })
 
 
-async def run_load_test(method, path, users, ramp_up, duration, body):
+async def run_load_test(method, path, users, ramp_up, duration, body_fn):
     url = f"{BASE_URL}{path}"
     results = []
     limits = httpx.Limits(max_connections=users + 10, max_keepalive_connections=users)
@@ -82,7 +92,7 @@ async def run_load_test(method, path, users, ramp_up, duration, body):
             i = 0
             while time.perf_counter() < end_time:
                 tasks.append(asyncio.create_task(
-                    fire_request(client, method, url, body, results, 0)
+                    fire_request(client, method, url, body_fn, results, 0)
                 ))
                 i += 1
                 if i <= users:
@@ -93,7 +103,7 @@ async def run_load_test(method, path, users, ramp_up, duration, body):
             for i in range(users):
                 delay = i * interval
                 tasks.append(asyncio.create_task(
-                    fire_request(client, method, url, body, results, delay)
+                    fire_request(client, method, url, body_fn, results, delay)
                 ))
 
         await asyncio.gather(*tasks)
@@ -129,6 +139,8 @@ def summarize(results, method, total_duration_s):
         print(f"Latencia p95: {percentile(latencies, 95):.2f} ms")
         print(f"Latencia p99: {percentile(latencies, 99):.2f} ms")
     print(f"Error %: {error_pct:.2f}%  ({len(errors)}/{total})")
+    if errors:
+        print(f"Ejemplo de error: {errors[0]['error']}")
 
 
 def export_csv(results, filename):
@@ -157,22 +169,23 @@ def main():
 
     if args.endpoint == "GET":
         path = args.path or "/logistics/tenderos/productos-disponibles?tiendaId=bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb&zona=Zona%20Norte"
-        body = None
+        body_fn = None
         csv_name = "results_get.csv"
     else:
         path = "/logistics/pedidos"
         if args.body:
             with open(args.body, "r", encoding="utf-8") as f:
-                body = json.load(f)
+                fixed_body = json.load(f)
+            body_fn = lambda: fixed_body
         else:
-            body = build_post_body()
+            body_fn = build_post_body
         csv_name = "results_post.csv"
 
     print(f"Lanzando prueba {args.endpoint} -> {BASE_URL}{path}")
     print(f"Users={args.users} Ramp-up={args.ramp_up}s Duration={args.duration}s")
 
     t0 = time.perf_counter()
-    results = asyncio.run(run_load_test(args.endpoint, path, args.users, args.ramp_up, args.duration, body))
+    results = asyncio.run(run_load_test(args.endpoint, path, args.users, args.ramp_up, args.duration, body_fn))
     total_time = time.perf_counter() - t0
 
     summarize(results, args.endpoint, total_time)
