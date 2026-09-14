@@ -1,4 +1,4 @@
-﻿"""
+"""
 load_test.py - Script de pruebas de carga para el backend monolitico de Cheapest.
 """
 
@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 
 import httpx
 
-BASE_URL = "http://localhost:3000"
+BASE_URL = "http://Cheapest-alb-516593994.us-east-1.elb.amazonaws.com"
 
 _id_counter = itertools.count()
 
