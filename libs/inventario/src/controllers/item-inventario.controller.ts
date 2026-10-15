@@ -17,7 +17,7 @@ import {
 } from '../dtos';
 import { ItemInventarioService } from '../services';
 import {
-  applyFaultDelay,
+  applyFault,
   isFaulting,
 } from '../../../../apps/inventario/src/fault.middleware';
 
@@ -29,7 +29,7 @@ export class ItemInventarioController {
   async checkDisponibilidad(
     @Param('productoId') productoId: string,
   ): Promise<{ productoId: string; disponible: boolean; faulting: boolean }> {
-    await applyFaultDelay();
+    await applyFault();
     const disponible = await this.itemService.getDisponibilidadPorProducto(
       productoId,
     );

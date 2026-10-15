@@ -25,19 +25,22 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: inventario_cluster
-                            # timeout = connect_timeout × (1 + num_retries) + backoff acumulado
-                            #         = 2s × (1 + 1) + ~0.13s (base_interval con jitter) ≈ 4.13s → 5s de margen
-                            timeout: 5s
+                            # TODO [1]: Calcule el timeout total de la ruta.
+                            # Debe cubrir: (connect_timeout + upstream response) × (1 intento original + num_retries) + backoff acumulado.
+                            # Un timeout demasiado corto aborta los reintentos; uno demasiado largo acumula conexiones en espera.
+                            timeout: ???s
                             retry_policy:
                               retry_on: "5xx,reset,connect-failure,gateway-error"
-                              # num_retries=1 → a lo sumo 2 llamadas a Inventario por request (1 original + 1 retry)
-                              # = factor de amplificación 2× exacto, cumple el límite de ASR-2 (≤ 2×).
-                              num_retries: 1
+                              # TODO [2]: ¿Cuántos reintentos son suficientes para cubrir fallos transitorios
+                              # sin amplificar la carga más allá de 2× (ASR-2)?
+                              num_retries: ???
                               retry_back_off:
-                                # base_interval: espera corta para no acumular latencia en fallos transitorios.
-                                base_interval: 0.1s
-                                # max_interval: acota el backoff para que quepa dentro del timeout de la ruta.
-                                max_interval: 1s
+                                # TODO [3]: Defina el intervalo base del backoff exponencial (en segundos, p. ej. 0.1s).
+                                # Recuerde que Envoy aplica ±25 % de jitter automáticamente sobre este valor.
+                                base_interval: ???s
+                                # TODO [4]: Defina el intervalo máximo del backoff (en segundos).
+                                # Evite valores tan altos que el timeout de la ruta expire antes del último reintento.
+                                max_interval: ???s
                               retry_host_predicate:
                                 - name: envoy.retry_host_predicates.previous_hosts
                                   typed_config:
@@ -53,6 +56,11 @@ static_resources:
       connect_timeout: 2s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
+      # Sin panic mode: cuando todos los hosts están eyectados (circuito OPEN), Envoy responde
+      # 503 inmediato (flag UH) en lugar de seguir enviando tráfico al host caído.
+      common_lb_config:
+        healthy_panic_threshold:
+          value: 0
       load_assignment:
         cluster_name: inventario_cluster
         endpoints:
@@ -79,16 +87,15 @@ static_resources:
       # Outlier detection = implementación del patrón Circuit Breaker en Envoy.
       # Estados: CLOSED (normal) → OPEN (host eyectado) → HALF-OPEN (prueba automática).
       outlier_detection:
-        # consecutive_5xx=3: suficientemente sensible para abrir rápido ante un fallo persistente
-        # (delay de 5s de Inventario dispara timeout+5xx en cada intento), sin abrir por un único
-        # error transitorio aislado.
-        consecutive_5xx: 3
+        # TODO [5]: ¿Cuántos errores 5xx consecutivos deben ocurrir para abrir el circuito?
+        # Valor bajo → más sensible (abre rápido, más falsos positivos).
+        # Valor alto → más tolerante (tarda más en proteger al servicio).
+        consecutive_5xx: ???
         interval: 10s
-        # base_ejection_time=20s: bien por debajo de cualquier RECOVERY_TIME_MS usado en el lab
-        # (60s por defecto en el template, 600s en la ronda de reproducción del fallo), así el
-        # circuito reintenta HALF-OPEN varias veces mientras Inventario sigue caído y detecta
-        # la recuperación automática sin esperar el ejection_time completo de una sola vez.
-        base_ejection_time: 20s
+        # TODO [6]: ¿Cuánto tiempo debe permanecer el circuito OPEN antes de intentar HALF-OPEN?
+        # Debe ser inferior a la duración del fallo inyectado en Inventario (durationMs del
+        # endpoint de caos) para que el estado HALF-OPEN pueda detectar la recuperación.
+        base_ejection_time: ???s
         max_ejection_percent: 100
         enforcing_consecutive_5xx: 100
         enforcing_success_rate: 0

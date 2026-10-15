@@ -8,6 +8,7 @@ import {
   RegistroVentaProductoTienda,
 } from '../../../libs/inventario/src/repositories/entities';
 import { DatabaseModule } from '../../../libs/shared/database/src';
+import { ChaosController } from './chaos.controller';
 import { HealthController } from './health.controller';
 
 const INVENTARIO_ENTITIES = [
@@ -23,6 +24,6 @@ const INVENTARIO_ENTITIES = [
     DatabaseModule.forRoot(INVENTARIO_ENTITIES),
     InventarioModule,
   ],
-  controllers: [HealthController],
+  controllers: [HealthController, ChaosController],
 })
 export class AppModule {}

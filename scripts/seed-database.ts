@@ -36,6 +36,10 @@ process.env.DB_PORT ??= '5432';
 process.env.DB_USERNAME ??= 'postgres';
 process.env.DB_PASSWORD ??= 'postgres';
 process.env.DB_NAME ??= 'cheapest';
+// El Postgres de Docker Compose no tiene SSL; contra RDS se usa el valor por defecto (true).
+if (['127.0.0.1', 'localhost'].includes(process.env.DB_HOST)) {
+  process.env.DB_SSL ??= 'false';
+}
 
 async function initializeDataSourceWithRetry(entities: Function[]) {
   let lastError: unknown;
@@ -117,7 +121,12 @@ async function seedDatabase() {
       '../libs/shared/database/src/seed.sql',
     );
     const sql = fs.readFileSync(sqlPath, 'utf8');
+    // Quitar las líneas de comentario antes de partir: cada bloque de seed.sql empieza con
+    // un comentario, y si se filtra por startsWith('--') se descartan todas las sentencias.
     const statements = sql
+      .split('\n')
+      .filter((line) => !line.trim().startsWith('--'))
+      .join('\n')
       .split(';')
       .map((statement) => statement.trim())
       .filter(

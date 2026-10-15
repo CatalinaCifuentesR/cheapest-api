@@ -8,7 +8,12 @@ import { OutboxHttpPublisherService } from './services/outbox-http-publisher.ser
 import { ProductoExternoService, VentaService } from './services';
 
 // Controllers
-import { ProductoExternoController, VentaController } from './controllers';
+import {
+  SidecarChaosController,
+  OutboxController,
+  ProductoExternoController,
+  VentaController,
+} from './controllers';
 
 // Clients Mock
 import { TiendaClientMock } from './clients';
@@ -17,7 +22,12 @@ import { InventarioDisponibilidadClient } from '../../shared/inventario-client/s
 import { LogisticaProductosClient } from '../../shared/logistica-client/src';
 
 @Module({
-  controllers: [ProductoExternoController, VentaController],
+  controllers: [
+    ProductoExternoController,
+    VentaController,
+    OutboxController,
+    SidecarChaosController,
+  ],
   providers: [
     // Repositories
     ...repositoryProviders,

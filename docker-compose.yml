@@ -29,6 +29,8 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       DB_HOST: postgres
+      # El Postgres local no tiene SSL (en RDS sí se usa, valor por defecto true)
+      DB_SSL: "false"
       DB_PORT: 5432
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
@@ -50,6 +52,8 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       DB_HOST: postgres
+      # El Postgres local no tiene SSL (en RDS sí se usa, valor por defecto true)
+      DB_SSL: "false"
       DB_PORT: 5432
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
@@ -95,6 +99,8 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       DB_HOST: postgres
+      # El Postgres local no tiene SSL (en RDS sí se usa, valor por defecto true)
+      DB_SSL: "false"
       DB_PORT: 5432
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
@@ -106,6 +112,10 @@ services:
       INVENTARIO_BASE_URL: http://ventas-sidecar:10000
       # Timeout must be >= sidecar total timeout (8s) to avoid premature abort
       INVENTARIO_TIMEOUT_MS: 9000
+      # Puerto de administración de Envoy: POST /ventas/chaos/sidecar llama a /quitquitquit
+      SIDECAR_ADMIN_URL: http://ventas-sidecar:9901
+      # Intentos del Outbox antes de marcar FAILED (polling de 2 s → 600 ≈ 20 min)
+      OUTBOX_MAX_ATTEMPTS: 600
     depends_on:
       postgres:
         condition: service_healthy
