@@ -109,7 +109,9 @@ services:
       PORT: 3003
       # Point ventas at the sidecar proxy, not directly at inventario.
       # The sidecar adds retry + circuit breaker transparently.
-      INVENTARIO_BASE_URL: http://ventas-sidecar:10000
+      # Lab 5, configuración sin sidecar (grupo de control):
+      #   VENTAS_INVENTARIO_BASE_URL=http://inventario:3002 docker compose up -d ventas
+      INVENTARIO_BASE_URL: ${VENTAS_INVENTARIO_BASE_URL:-http://ventas-sidecar:10000}
       # Timeout must be >= sidecar total timeout (8s) to avoid premature abort
       INVENTARIO_TIMEOUT_MS: 9000
       # Puerto de administración de Envoy: POST /ventas/chaos/sidecar llama a /quitquitquit

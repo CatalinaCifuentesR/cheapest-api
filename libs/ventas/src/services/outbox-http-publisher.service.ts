@@ -3,15 +3,26 @@ import { DataSource } from 'typeorm';
 import { OutboxHttpCall } from '../repositories/entities/outbox-http-call.entity';
 
 // Con polling de 2 s, 600 intentos ≈ 20 min antes de marcar FAILED: cubre una caída
-// de Inventario mientras ECS reemplaza la tarea (Lab 5, experimento E3).
+// de Inventario mientras ECS reemplaza la tarea (Lab 5, experimento E2).
 const MAX_ATTEMPTS = Number.parseInt(
   process.env.OUTBOX_MAX_ATTEMPTS ?? '600',
+  10,
+);
+
+// Filas que el publicador toma por ciclo (cada 2 s). Con 100 entrega hasta ~50 filas/s:
+// suficiente para reconciliar una caída de Inventario de varios minutos en segundos (ASR-3)
+// y para vaciar las ventas duplicadas que deja la tormenta de reintentos (E1).
+const BATCH_SIZE = Number.parseInt(
+  process.env.OUTBOX_BATCH_SIZE ?? '100',
   10,
 );
 
 @Injectable()
 export class OutboxHttpPublisherService implements OnModuleInit {
   private readonly logger = new Logger(OutboxHttpPublisherService.name);
+  // Evita que dos ciclos se solapen si un lote tarda más de 2 s (por ejemplo, con
+  // Inventario lento): el ciclo siguiente espera a que termine el anterior.
+  private running = false;
   private readonly inventarioBaseUrl =
     process.env.INVENTARIO_BASE_URL ?? 'http://localhost:3002';
 
@@ -19,9 +30,13 @@ export class OutboxHttpPublisherService implements OnModuleInit {
 
   onModuleInit() {
     setInterval(() => {
-      this.processPending().catch((err) =>
-        this.logger.error(`Outbox HTTP error: ${String(err)}`),
-      );
+      if (this.running) return;
+      this.running = true;
+      this.processPending()
+        .catch((err) => this.logger.error(`Outbox HTTP error: ${String(err)}`))
+        .finally(() => {
+          this.running = false;
+        });
     }, 2000);
   }
 
@@ -30,7 +45,7 @@ export class OutboxHttpPublisherService implements OnModuleInit {
     const pending = await repo.find({
       where: { status: 'PENDING' },
       order: { createdAt: 'ASC' },
-      take: 10,
+      take: BATCH_SIZE,
     });
 
     for (const call of pending) {
