@@ -1,0 +1,274 @@
+##### CONFIG 2 SOLO REINTENTOS
+100:        enforcing_consecutive_5xx: 0
+ Image cheapest-api-inventario Building 
+ Image cheapest-api-ventas-sidecar Building 
+ Image cheapest-api-logistica Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.55kB 0.1s done
+#1 DONE 0.1s
+
+#2 [inventario internal] load build definition from Dockerfile
+#2 transferring dockerfile: 367B 0.0s done
+#2 DONE 0.1s
+
+#3 [ventas-sidecar internal] load build definition from Dockerfile
+#3 transferring dockerfile: 698B 0.0s done
+#3 DONE 0.1s
+
+#4 [logistica internal] load build definition from Dockerfile
+#4 transferring dockerfile: 365B 0.0s done
+#4 DONE 0.1s
+
+#5 [logistica internal] load metadata for docker.io/library/node:22-alpine
+#5 ...
+
+#6 [auth] envoyproxy/envoy:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [ventas-sidecar internal] load metadata for docker.io/envoyproxy/envoy:v1.31-latest
+#8 ...
+
+#5 [inventario internal] load metadata for docker.io/library/node:22-alpine
+#5 DONE 1.6s
+
+#9 [logistica internal] load .dockerignore
+#9 transferring context: 459B 0.0s done
+#9 DONE 0.0s
+
+#10 [inventario builder 1/6] FROM docker.io/library/node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914
+#10 resolve docker.io/library/node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 0.0s done
+#10 DONE 0.0s
+
+#8 [ventas-sidecar internal] load metadata for docker.io/envoyproxy/envoy:v1.31-latest
+#8 DONE 1.8s
+
+#11 [ventas-sidecar internal] load .dockerignore
+#11 transferring context: 2B done
+#11 DONE 0.0s
+
+#12 [ventas-sidecar internal] load build context
+#12 DONE 0.0s
+
+#13 [ventas-sidecar 1/5] FROM docker.io/envoyproxy/envoy:v1.31-latest@sha256:caa5b411be1633b90023592a34a7e010c933d6e60206c758f631485e53006865
+#13 resolve docker.io/envoyproxy/envoy:v1.31-latest@sha256:caa5b411be1633b90023592a34a7e010c933d6e60206c758f631485e53006865
+#13 resolve docker.io/envoyproxy/envoy:v1.31-latest@sha256:caa5b411be1633b90023592a34a7e010c933d6e60206c758f631485e53006865 0.1s done
+#13 DONE 0.1s
+
+#12 [ventas-sidecar internal] load build context
+#12 transferring context: 5.67kB done
+#12 DONE 0.0s
+
+#14 [ventas-sidecar 2/5] RUN apt-get update &&     apt-get install -y --no-install-recommends gettext-base &&     rm -rf /var/lib/apt/lists/*
+#14 CACHED
+
+#15 [logistica internal] load build context
+#15 ...
+
+#16 [ventas-sidecar 3/5] COPY envoy.yaml.tmpl /etc/envoy/envoy.yaml.tmpl
+#16 DONE 0.1s
+
+#15 [logistica internal] load build context
+#15 ...
+
+#17 [ventas-sidecar 4/5] COPY entrypoint.sh /entrypoint.sh
+#17 DONE 0.1s
+
+#15 [logistica internal] load build context
+#15 transferring context: 1.58MB 0.4s done
+#15 DONE 0.5s
+
+#18 [inventario builder 2/6] WORKDIR /app
+#18 CACHED
+
+#19 [inventario builder 3/6] COPY package*.json ./
+#19 CACHED
+
+#20 [inventario builder 4/6] RUN npm ci
+#20 CACHED
+
+#21 [logistica builder 5/6] COPY . .
+#21 ...
+
+#22 [ventas-sidecar 5/5] RUN chmod +x /entrypoint.sh
+#22 DONE 0.4s
+
+#23 [ventas-sidecar] exporting to image
+#23 exporting layers
+#23 exporting layers 0.3s done
+#23 exporting manifest sha256:94ff5d58383d97cb4c85031c8ba115fe3e057710998d219cc1c2e461ecd67fa2 0.0s done
+#23 exporting config sha256:edf85b21dbb5e1fcb79324194cf6a0a3edea192c516de30fe1b13928c57dc5d1 0.0s done
+#23 exporting attestation manifest sha256:9d79051da670bf537f3eb96d29cfb4e3c69f437f819e4ff83e660896648533dc 0.0s done
+#23 exporting manifest list sha256:564dcae1771fb2b60cc48bea3f1e24aa1234b6ae854250f2f8a563e2090f878a
+#23 exporting manifest list sha256:564dcae1771fb2b60cc48bea3f1e24aa1234b6ae854250f2f8a563e2090f878a 0.0s done
+#23 naming to docker.io/library/cheapest-api-ventas-sidecar:latest done
+#23 unpacking to docker.io/library/cheapest-api-ventas-sidecar:latest 0.1s done
+#23 DONE 0.6s
+
+#21 [logistica builder 5/6] COPY . .
+#21 ...
+
+#24 [ventas-sidecar] resolving provenance for metadata file
+#24 DONE 0.1s
+
+#21 [logistica builder 5/6] COPY . .
+#21 DONE 1.8s
+
+#25 [logistica builder 6/6] RUN npm run build:logistica
+#25 0.856 
+#25 0.856 > cheapest-api@0.0.1 build:logistica
+#25 0.856 > nest build logistica
+#25 0.856 
+#25 ...
+
+#26 [inventario builder 6/6] RUN npm run build:inventario
+#26 0.857 
+#26 0.857 > cheapest-api@0.0.1 build:inventario
+#26 0.857 > nest build inventario
+#26 0.857 
+#26 DONE 9.8s
+
+#25 [logistica builder 6/6] RUN npm run build:logistica
+#25 DONE 10.2s
+
+#27 [inventario runner 4/5] RUN npm ci --omit=dev
+#27 CACHED
+
+#28 [inventario runner 5/5] COPY --from=builder /app/dist ./dist
+#28 CACHED
+
+#27 [logistica runner 4/5] RUN npm ci --omit=dev
+#27 CACHED
+
+#29 [logistica runner 5/5] COPY --from=builder /app/dist ./dist
+#29 CACHED
+
+#30 [logistica] exporting to image
+#30 exporting layers done
+#30 exporting manifest sha256:4e2fb3213894c4a79edb76e2d9731ee789ce796dd5f9c1e2b3c3c65692bf27ef done
+#30 exporting config sha256:53fd62951f5609acd12ce13673272991730c7218f953ebb78917c6591fc1e195 done
+#30 exporting attestation manifest sha256:2e74af5af4642e10f4c93e58d4e028c10d255e4d017fafb2c8f366d5b007c343
+#30 ...
+
+#31 [inventario] exporting to image
+#31 exporting layers done
+#31 exporting manifest sha256:2f3b576c0453725642bb5db56f8ed683318d99d4cda4f6f1fee318f053ceca35 done
+#31 exporting config sha256:e607b963bf0f1319bb126bb872ac3281e06fd328726ab26e940c04fcde31f00f done
+#31 exporting attestation manifest sha256:34de3a1f497773b7299a3efeef025112d9f720d5ddb82c5c364af7e12da56ed1 0.0s done
+#31 exporting manifest list sha256:9c4e108758c90f11f2b41472cc45d7831c34bbd8b5884ccd363b7e99a0b40399 0.0s done
+#31 naming to docker.io/library/cheapest-api-inventario:latest done
+#31 unpacking to docker.io/library/cheapest-api-inventario:latest 0.0s done
+#31 DONE 0.2s
+
+#30 [logistica] exporting to image
+#30 exporting attestation manifest sha256:2e74af5af4642e10f4c93e58d4e028c10d255e4d017fafb2c8f366d5b007c343 0.1s done
+#30 exporting manifest list sha256:e0769f86514d01a236ce920f0c128fab0a0d1ce54cda9018ebc407e3ab04fcac 0.0s done
+#30 naming to docker.io/library/cheapest-api-logistica:latest done
+#30 unpacking to docker.io/library/cheapest-api-logistica:latest 0.0s done
+#30 DONE 0.2s
+
+#32 [inventario] resolving provenance for metadata file
+#32 DONE 0.1s
+
+#33 [logistica] resolving provenance for metadata file
+#33 DONE 0.0s
+ Image cheapest-api-logistica Built 
+ Image cheapest-api-inventario Built 
+ Image cheapest-api-ventas-sidecar Built 
+ Container cheapest-api-postgres-1 Running 
+ Container cheapest-api-logistica-1 Running 
+ Container cheapest-api-inventario-1 Running 
+ Container cheapest-api-ventas-sidecar-1 Recreate 
+ Container cheapest-api-ventas-sidecar-1 Recreated 
+ Container cheapest-api-postgres-1 Waiting 
+ Container cheapest-api-postgres-1 Healthy 
+ Container cheapest-api-postgres-1 Waiting 
+ Container cheapest-api-postgres-1 Healthy 
+ Container cheapest-api-ventas-sidecar-1 Starting 
+ Container cheapest-api-ventas-sidecar-1 Started 
+LIVE
+
+--- SNAP antes 19:12:45
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 176
+"PENDING":2,"DELIVERED":19251,"FAILED":0
+{"mode":"off","delayMs":0,"errorRate":0,"until":null,"active":false,"llamadasDisponibilidad":89,"injectedAt":null,"now":"2026-10-24T19:12:45.885Z"}
+T_inj=2026-10-24T19:12:45Z  (T_rem = +150 s)
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:15:16.043Z","active":true,"llamadasDisponibilidad":89,"injectedAt":"2026-10-24T19:12:46.043Z","now":"2026-10-24T19:12:46.043Z"}
+Tormenta: 50 clientes durante 120s, timeout de cliente 3s, backoff=0 → solo_reintentos_apps.csv
+--- SNAP fallo_30s 19:13:16
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 26
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 217
+cluster.inventario_cluster.upstream_rq_total: 618
+"PENDING":20,"DELIVERED":19454,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:15:16.043Z","active":true,"llamadasDisponibilidad":329,"injectedAt":"2026-10-24T19:12:46.043Z","now":"2026-10-24T19:13:16.654Z"}
+--- SNAP fallo_90s 19:14:16
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 92
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 698
+cluster.inventario_cluster.upstream_rq_total: 1588
+"PENDING":8,"DELIVERED":19947,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:15:16.043Z","active":true,"llamadasDisponibilidad":810,"injectedAt":"2026-10-24T19:12:46.043Z","now":"2026-10-24T19:14:17.390Z"}
+Pedidos lógicos: 789 (completados: 789)
+Peticiones enviadas: 789 → 1.00 intentos por pedido
+Abandonadas por timeout del cliente: 0 · respuestas 429: 0
+--- SNAP T_rem_mas_10s 19:15:33
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 125
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 993
+cluster.inventario_cluster.upstream_rq_total: 2216
+"PENDING":2,"DELIVERED":20271,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:15:16.043Z","active":false,"llamadasDisponibilidad":1109,"injectedAt":"2026-10-24T19:12:46.043Z","now":"2026-10-24T19:15:33.962Z"}
+--- SNAP final 19:16:24
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 125
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 993
+cluster.inventario_cluster.upstream_rq_total: 2358
+"PENDING":2,"DELIVERED":20342,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:15:16.043Z","active":false,"llamadasDisponibilidad":1181,"injectedAt":"2026-10-24T19:12:46.043Z","now":"2026-10-24T19:16:24.637Z"}
+=== VENTANAS
+ventana (UTC) endpoint             n  disp %  pend %   p99 s
+19:11:40   venta                7   100.0     0.0   0.314
+19:11:50   venta               14   100.0     0.0   0.062
+19:12:00   venta               15   100.0     0.0   0.056
+19:12:10   venta               15   100.0     0.0   0.053
+19:12:20   venta               15   100.0     0.0   0.127
+19:12:30   venta               14   100.0     0.0   0.058
+19:12:40   venta               14   100.0    35.7   2.070
+19:12:50   venta               13   100.0   100.0   2.055
+19:13:00   venta               14   100.0   100.0   2.076
+19:13:10   venta               13   100.0   100.0   2.056
+19:13:20   venta               13   100.0   100.0   2.066
+19:13:30   venta               14   100.0   100.0   2.124
+19:13:40   venta               13   100.0   100.0   2.058
+19:13:50   venta               13   100.0   100.0   2.061
+19:14:00   venta               14   100.0   100.0   2.083
+19:14:10   venta               13   100.0   100.0   2.054
+19:14:20   venta               14   100.0   100.0   2.072
+19:14:30   venta               13   100.0   100.0   2.066
+19:14:40   venta               14   100.0   100.0   2.048
+19:14:50   venta               15   100.0   100.0   2.037
+19:15:00   venta               15   100.0   100.0   2.058
+19:15:10   venta               14   100.0    57.1   2.038
+19:15:20   venta               15   100.0     0.0   0.050
+19:15:30   venta               15   100.0     0.0   0.038
+19:15:40   venta               14   100.0     0.0   0.054
+19:15:50   venta               14   100.0     0.0   0.076
+19:16:00   venta               15   100.0     0.0   0.041
+19:16:10   venta               14   100.0     0.0   0.042
+19:16:20   venta                6   100.0     0.0   0.045
+Tabla por ventanas guardada en solo_reintentos_ventanas.csv
+TTD primera pending: 2026-10-24T19:12:46Z
+ultima pending: 2026-10-24T19:15:15Z
+=== TORMENTA (apps)
+pedidos=789 completados=789 peticiones=789 intentos/pedido=1.00 abandonadas=0 429=0

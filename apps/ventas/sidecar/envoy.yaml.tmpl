@@ -26,21 +26,21 @@ static_resources:
                           route:
                             cluster: inventario_cluster
                             # TODO [1]: Calcule el timeout total de la ruta.
-                            # Debe cubrir: (connect_timeout + upstream response) × (1 intento original + num_retries) + backoff acumulado.
+                            # Debe cubrir: (connect_timeout + upstream response) Ã— (1 intento original + num_retries) + backoff acumulado.
                             # Un timeout demasiado corto aborta los reintentos; uno demasiado largo acumula conexiones en espera.
-                            timeout: ???s
+                            timeout: 2s
                             retry_policy:
                               retry_on: "5xx,reset,connect-failure,gateway-error"
-                              # TODO [2]: ¿Cuántos reintentos son suficientes para cubrir fallos transitorios
-                              # sin amplificar la carga más allá de 2× (ASR-2)?
-                              num_retries: ???
+                              # TODO [2]: Â¿CuÃ¡ntos reintentos son suficientes para cubrir fallos transitorios
+                              # sin amplificar la carga mÃ¡s allÃ¡ de 2Ã— (ASR-2)?
+                              num_retries: 1
                               retry_back_off:
                                 # TODO [3]: Defina el intervalo base del backoff exponencial (en segundos, p. ej. 0.1s).
-                                # Recuerde que Envoy aplica ±25 % de jitter automáticamente sobre este valor.
-                                base_interval: ???s
-                                # TODO [4]: Defina el intervalo máximo del backoff (en segundos).
-                                # Evite valores tan altos que el timeout de la ruta expire antes del último reintento.
-                                max_interval: ???s
+                                # Recuerde que Envoy aplica Â±25 % de jitter automÃ¡ticamente sobre este valor.
+                                base_interval: 0.1s
+                                # TODO [4]: Defina el intervalo mÃ¡ximo del backoff (en segundos).
+                                # Evite valores tan altos que el timeout de la ruta expire antes del Ãºltimo reintento.
+                                max_interval: 0.5s
                               retry_host_predicate:
                                 - name: envoy.retry_host_predicates.previous_hosts
                                   typed_config:
@@ -56,8 +56,8 @@ static_resources:
       connect_timeout: 2s
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
-      # Sin panic mode: cuando todos los hosts están eyectados (circuito OPEN), Envoy responde
-      # 503 inmediato (flag UH) en lugar de seguir enviando tráfico al host caído.
+      # Sin panic mode: cuando todos los hosts estÃ¡n eyectados (circuito OPEN), Envoy responde
+      # 503 inmediato (flag UH) en lugar de seguir enviando trÃ¡fico al host caÃ­do.
       common_lb_config:
         healthy_panic_threshold:
           value: 0
@@ -69,13 +69,13 @@ static_resources:
                   address:
                     socket_address:
                       # Sustituido en tiempo de arranque por entrypoint.sh mediante envsubst.
-                      # docker-compose → INVENTARIO_UPSTREAM_HOST=inventario, INVENTARIO_UPSTREAM_PORT=3002
-                      # ECS (mismo task) → INVENTARIO_UPSTREAM_HOST=localhost, INVENTARIO_UPSTREAM_PORT=3002
-                      # ECS (cross-task) → INVENTARIO_UPSTREAM_HOST=<ALB DNS>, INVENTARIO_UPSTREAM_PORT=80
+                      # docker-compose â†’ INVENTARIO_UPSTREAM_HOST=inventario, INVENTARIO_UPSTREAM_PORT=3002
+                      # ECS (mismo task) â†’ INVENTARIO_UPSTREAM_HOST=localhost, INVENTARIO_UPSTREAM_PORT=3002
+                      # ECS (cross-task) â†’ INVENTARIO_UPSTREAM_HOST=<ALB DNS>, INVENTARIO_UPSTREAM_PORT=80
                       address: ${INVENTARIO_UPSTREAM_HOST}
                       port_value: ${INVENTARIO_UPSTREAM_PORT}
 
-      # Límites de recursos del proxy — evitan que el sidecar mismo se convierta en un cuello de botella.
+      # LÃ­mites de recursos del proxy â€” evitan que el sidecar mismo se convierta en un cuello de botella.
       circuit_breakers:
         thresholds:
           - priority: DEFAULT
@@ -84,18 +84,18 @@ static_resources:
             max_requests: 100
             max_retries: 10
 
-      # Outlier detection = implementación del patrón Circuit Breaker en Envoy.
-      # Estados: CLOSED (normal) → OPEN (host eyectado) → HALF-OPEN (prueba automática).
+      # Outlier detection = implementaciÃ³n del patrÃ³n Circuit Breaker en Envoy.
+      # Estados: CLOSED (normal) â†’ OPEN (host eyectado) â†’ HALF-OPEN (prueba automÃ¡tica).
       outlier_detection:
-        # TODO [5]: ¿Cuántos errores 5xx consecutivos deben ocurrir para abrir el circuito?
-        # Valor bajo → más sensible (abre rápido, más falsos positivos).
-        # Valor alto → más tolerante (tarda más en proteger al servicio).
-        consecutive_5xx: ???
+        # TODO [5]: Â¿CuÃ¡ntos errores 5xx consecutivos deben ocurrir para abrir el circuito?
+        # Valor bajo â†’ mÃ¡s sensible (abre rÃ¡pido, mÃ¡s falsos positivos).
+        # Valor alto â†’ mÃ¡s tolerante (tarda mÃ¡s en proteger al servicio).
+        consecutive_5xx: 5
         interval: 10s
-        # TODO [6]: ¿Cuánto tiempo debe permanecer el circuito OPEN antes de intentar HALF-OPEN?
-        # Debe ser inferior a la duración del fallo inyectado en Inventario (durationMs del
-        # endpoint de caos) para que el estado HALF-OPEN pueda detectar la recuperación.
-        base_ejection_time: ???s
+        # TODO [6]: Â¿CuÃ¡nto tiempo debe permanecer el circuito OPEN antes de intentar HALF-OPEN?
+        # Debe ser inferior a la duraciÃ³n del fallo inyectado en Inventario (durationMs del
+        # endpoint de caos) para que el estado HALF-OPEN pueda detectar la recuperaciÃ³n.
+        base_ejection_time: 5s
         max_ejection_percent: 100
         enforcing_consecutive_5xx: 100
         enforcing_success_rate: 0

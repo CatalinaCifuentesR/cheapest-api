@@ -1,0 +1,27 @@
+--- SNAP antes 01:27:50
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 5
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 99
+cluster.inventario_cluster.upstream_rq_total: 4144
+"PENDING":2,"DELIVERED":5976,"FAILED":0
+{"mode":"off","delayMs":0,"errorRate":0,"until":null,"active":false,"llamadasDisponibilidad":5811,"injectedAt":null,"now":"2026-10-24T01:27:51.009Z"}
+T_inj=2026-10-24T01:27:51Z  (T_rem = +150 s)
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T01:30:21.259Z","active":true,"llamadasDisponibilidad":5812,"injectedAt":"2026-10-24T01:27:51.259Z","now":"2026-10-24T01:27:51.259Z"}
+Tormenta: 50 clientes durante 120s, timeout de cliente 3s, backoff=0 → solo_reintentos_apps.csv
+--- SNAP fallo_30s 01:28:22
+cluster.inventario_cluster.outlier_detection.ejections_active: 1
+cluster.inventario_cluster.outlier_detection.ejections_total: 7
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 179
+cluster.inventario_cluster.upstream_rq_total: 4382
+"PENDING":69,"DELIVERED":6132,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T01:30:40.087Z","active":true,"llamadasDisponibilidad":5892,"injectedAt":"2026-10-24T01:28:10.087Z","now":"2026-10-24T01:28:26.347Z"}
+--- SNAP fallo_90s 01:29:28
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 9
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 245
+cluster.inventario_cluster.upstream_rq_total: 4579
+"PENDING":405,"DELIVERED":6268,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T01:30:40.087Z","active":true,"llamadasDisponibilidad":5974,"injectedAt":"2026-10-24T01:28:10.087Z","now":"2026-10-24T01:29:31.514Z"}

@@ -1,0 +1,81 @@
+--- SNAP antes 19:55:03
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 0
+"PENDING":1,"DELIVERED":20433,"FAILED":0
+{"mode":"off","delayMs":0,"errorRate":0,"until":null,"active":false,"llamadasDisponibilidad":1270,"injectedAt":null,"now":"2026-10-24T19:55:03.990Z"}
+T_inj=2026-10-24T19:55:04Z  (T_rem = +150 s)
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:57:34.137Z","active":true,"llamadasDisponibilidad":1270,"injectedAt":"2026-10-24T19:55:04.137Z","now":"2026-10-24T19:55:04.137Z"}
+Tormenta: 50 clientes durante 120s, timeout de cliente 3s, backoff=0 → sin_sidecar_apps.csv
+--- SNAP fallo_30s 19:55:34
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 0
+"PENDING":21,"DELIVERED":20774,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:57:34.137Z","active":true,"llamadasDisponibilidad":1713,"injectedAt":"2026-10-24T19:55:04.137Z","now":"2026-10-24T19:55:35.155Z"}
+--- SNAP fallo_90s 19:56:35
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 0
+"PENDING":32,"DELIVERED":21717,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:57:34.137Z","active":true,"llamadasDisponibilidad":2669,"injectedAt":"2026-10-24T19:55:04.137Z","now":"2026-10-24T19:56:36.459Z"}
+Pedidos lógicos: 50 (completados: 0)
+Peticiones enviadas: 1695 → 33.90 intentos por pedido
+Abandonadas por timeout del cliente: 1695 · respuestas 429: 0
+--- SNAP T_rem_mas_10s 19:57:52
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 0
+"PENDING":2,"DELIVERED":22342,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:57:34.137Z","active":false,"llamadasDisponibilidad":3180,"injectedAt":"2026-10-24T19:55:04.137Z","now":"2026-10-24T19:57:53.019Z"}
+--- SNAP final 19:58:43
+cluster.inventario_cluster.outlier_detection.ejections_active: 0
+cluster.inventario_cluster.outlier_detection.ejections_total: 0
+cluster.inventario_cluster.upstream_rq_retry: 0
+cluster.inventario_cluster.upstream_rq_timeout: 0
+cluster.inventario_cluster.upstream_rq_total: 0
+"PENDING":2,"DELIVERED":22416,"FAILED":0
+{"mode":"latency","delayMs":5000,"errorRate":0,"until":"2026-10-24T19:57:34.137Z","active":false,"llamadasDisponibilidad":3254,"injectedAt":"2026-10-24T19:55:04.137Z","now":"2026-10-24T19:58:43.516Z"}
+=== VENTANAS
+ventana (UTC) endpoint             n  disp %  pend %   p99 s
+19:54:00   venta                9   100.0     0.0   0.387
+19:54:10   venta               15   100.0     0.0   0.074
+19:54:20   venta               15   100.0     0.0   0.054
+19:54:30   venta               15   100.0     0.0   0.040
+19:54:40   venta               14   100.0     0.0   0.043
+19:54:50   venta               15   100.0     0.0   0.050
+19:55:00   venta               14    42.9     0.0   5.109
+19:55:10   venta               10     0.0     0.0   5.136
+19:55:20   venta               12     0.0     0.0   5.124
+19:55:30   venta               13     0.0     0.0   5.123
+19:55:40   venta               12     0.0     0.0   5.086
+19:55:50   venta               12     0.0     0.0   5.100
+19:56:00   venta               12     0.0     0.0   5.122
+19:56:10   venta               12     0.0     0.0   5.142
+19:56:20   venta               12     0.0     0.0   5.089
+19:56:30   venta               12     0.0     0.0   5.068
+19:56:40   venta               12     0.0     0.0   5.067
+19:56:50   venta               13     0.0     0.0   5.076
+19:57:00   venta               11     0.0     0.0   5.118
+19:57:10   venta               15     0.0     0.0   5.047
+19:57:20   venta               15     0.0     0.0   5.038
+19:57:30   venta               15    60.0     0.0   5.041
+19:57:40   venta               14   100.0     0.0   0.040
+19:57:50   venta               15   100.0     0.0   0.049
+19:58:00   venta               15   100.0     0.0   0.049
+19:58:10   venta               15   100.0     0.0   0.156
+19:58:20   venta               15   100.0     0.0   0.038
+19:58:30   venta               14   100.0     0.0   0.047
+19:58:40   venta                6   100.0     0.0   0.041
+Tabla por ventanas guardada en sin_sidecar_ventanas.csv
+ultima pending: 
+=== TORMENTA (apps)
+pedidos=50 completados=0 peticiones=1695 intentos/pedido=33.90 abandonadas=1695 429=0
